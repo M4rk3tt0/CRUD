@@ -16,6 +16,18 @@ return [
 
 		],
 
+		'algolia' => [
+
+			'route'			=> 'locale_names',
+			'street_number'	=> '',
+			'postal_code'	=> 'postcode',
+			'city'			=> 'city',
+			'state'			=> 'administrative',
+			'region'		=> 'county',
+			'country'		=> 'country',
+
+		],
+
 	],
 
 ];
