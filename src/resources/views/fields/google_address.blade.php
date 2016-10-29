@@ -1,13 +1,24 @@
 <?php
     $entity_model = $crud->getModel();
  	
- 	//for update form, get initial state of the entity
+ 	// For update form, get initial state of the entity
     if( isset($id) && $id ){
     	$entity_column = $entity_model::find($id)->getAttributes();
 	}
 
+	// Get the API Key
 	$googleApiKey = isset( $field['google_api_key'] ) ? $field['google_api_key']  : ( config('backpack.google_api_key', env('GOOGLE_API_KEY', null)));
-
+	
+	// Translate the backpack address components name in the chosen provider components name
+	$provider = config('backpack.address.provider.' . $field['provider']);
+	foreach ($field['components'] as $key => $value){
+		if ($key != $provider[$key]){
+			$field['components'][$provider[$key]] = $field['components'][$key];
+			unset($field['components'][$key]);
+		}
+	}
+	
+	// Initialize the error messages
 	$notification = new stdClass();
 	$notification->title = trans('backpack::crud.address_google_error_title');
 	$notification->message = trans('backpack::crud.address_google_error_message');
