@@ -84,10 +84,9 @@
 			var notification = {!! json_encode($notification) !!}
 
 			function checkIfFieldIsEmpty(){
-				console.log('Si');
-				if(document.getElementById(field.name).value == ''){
+				if($('#' + field.name).val() == ''){
 					for (var component in field.components) {
-						document.getElementById(field.components[component].name).value = '';
+						$('#' + field.components[component].name).val('');
 					}	
 				}	
 			}
@@ -150,33 +149,37 @@
 	    @else
 		    <script src="https://cdn.jsdelivr.net/places.js/1/places.min.js"></script>
 			<script>
-				(function() {
+				$(document).ready(function(){
 					var placesAutocomplete = places({
-						container: document.querySelector('#address'),
+						container: document.querySelector('#' + field.name),
 						type: 'address',
 					});
+					
 					placesAutocomplete.on('change', function resultSelected(e) {
 
-						document.getElementById(field.name).value = e.suggestion.value;
+						$('#' + field.name).val(e.suggestion.value);
 
 						// Insert country and countryCode in the same array for provider compatibility
 						e.suggestion.hit['country'] = [e.suggestion.country,e.suggestion.countryCode.toUpperCase()];
 					    
 					    // Fill the corresponding field on the form if it exists.
 					    for (var component in field.components) {
-					    	document.getElementById(field.components[component].name).readOnly = false;
-					    	if (Array.isArray(e.suggestion.hit[component])){
+					    	
+					    	var current = $('#' + field.components[component].name);
+					    	current.prop('readonly', false);
+
+					    	if ($.isArray(e.suggestion.hit[component])){
 					    		if (e.suggestion.hit[component].length > 1 && field.components[component].type == 'short_name'){
-					    			document.getElementById(field.components[component].name).value = short(e.suggestion.hit[component]) || '';
+					    			current.val(short(e.suggestion.hit[component]));
 					    		} else {
-					    			document.getElementById(field.components[component].name).value = long(e.suggestion.hit[component]) || '';	
+					    			current.val(long(e.suggestion.hit[component]));	
 					    		}
 					    	} else {
-					    		document.getElementById(field.components[component].name).value = e.suggestion.hit[component] || '';
+					    		current.val(e.suggestion.hit[component]);
 					    	}
 					    }
 					});
-				})();
+				});
 
 				function long(a) {
 					var l = 0;
@@ -193,8 +196,7 @@
 					}
 					return a[l];
 				}
-    </script>
-			</script>
+    		</script>
 	    @endif    
     @endpush
 
