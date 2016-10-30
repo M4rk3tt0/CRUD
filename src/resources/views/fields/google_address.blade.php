@@ -37,6 +37,7 @@
       	name="{{ $field['name'] }}" 
       	id="{{ $field['name'] }}"
       	value="{{ old($field['name'], isset($entity_column[$field['name']]) ? $entity_column[$field['name']] : null) }}"
+      	onblur="checkIfFieldIsEmpty()"
       	@include('crud::inc.field_attributes')   
     >
    
@@ -81,6 +82,15 @@
     
 			var field = {!! json_encode($field) !!}  
 			var notification = {!! json_encode($notification) !!}
+
+			function checkIfFieldIsEmpty(){
+				console.log('Si');
+				if(document.getElementById(field.name).value == ''){
+					for (var component in field.components) {
+						document.getElementById(field.components[component].name).value = '';
+					}	
+				}	
+			}
 
 		</script>
 		@if($provider == 'google')
@@ -165,7 +175,6 @@
 					    		document.getElementById(field.components[component].name).value = e.suggestion.hit[component] || '';
 					    	}
 					    }
-
 					});
 				})();
 
